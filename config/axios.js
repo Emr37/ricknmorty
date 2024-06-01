@@ -1,15 +1,16 @@
 import axios from "axios";
 
-export const instance = axios.create();
+export const baseURL = "https://rickandmortyapi.com/api";
+export const api = axios.create({ baseURL });
 
-instance.interceptors.request.use(
+api.interceptors.request.use(
   (request) => {
     return { ...request, language: "tr" };
   },
   (error) => Promise.reject(error)
 );
 
-instance.interceptors.response.use(
+api.interceptors.response.use(
   (response) => response,
   (error) => {
     return Promise.reject(error);
@@ -18,21 +19,38 @@ instance.interceptors.response.use(
 
 export const post = async (url, data = {}) => {
   try {
-    const response = await instance.post(url, data);
-    //console.log("axios response", response);
+    const response = await api.post(url, data);
+
     return {
       success: true,
       data: response.data,
     };
   } catch (error) {
     console.error("post-url:", url);
-    console.log("axios error", error);
+    console.log("axios-post error", error);
 
     return {
       success: false,
       data: error.response.data,
-      error: error,
-      status: error.status,
+    };
+  }
+};
+
+export const get = async (url) => {
+  try {
+    const response = await api.get(url);
+    //console.log("axios response", response);
+    return {
+      success: true,
+      data: response.data,
+    };
+  } catch (error) {
+    console.error("get-url:", url);
+    console.log("axios-get error", error);
+
+    return {
+      success: false,
+      data: error.response.data,
     };
   }
 };

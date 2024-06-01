@@ -1,17 +1,15 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
 import { Platform, Alert } from "react-native";
-import { NavigationContainer, DarkTheme, DefaultTheme } from "@react-navigation/native";
+import { NavigationContainer, DarkTheme, DefaultTheme, createNavigationContainerRef } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import SplashScreen from "../components/Splash";
 import { CharactersScreen, CharacterDetailScreen, EpisodesScreen, EpisodeDetailScreen, FavCharactersScreen } from "../screens";
-
 import "react-native-gesture-handler";
 
 const Stack = createNativeStackNavigator();
 
 const RootNavigation = () => {
   const [isLoading, setIsLoading] = useState(true);
-  const [theme, setTheme] = useState("dark");
 
   const loadData = async () => {
     console.log("Loading....");
@@ -37,17 +35,14 @@ const RootNavigation = () => {
 
   return (
     <>
-      {/* <View style={{ height: 50, alignItems: "center", justifyContent: "flex-end", backgroundColor: "#aaa" }}>
-        <Text style={{ fontSize: 14, color: "#fff", textAlign: "center" }}>{data}</Text>
-      </View> */}
-      <NavigationContainer theme={theme === "dark" ? DarkTheme : DefaultTheme}>
+      <NavigationContainer>
         <Stack.Navigator
           screenOptions={{
             headerShown: false,
             headerTransparent: true,
           }}
         >
-          <Stack.Screen name="Home" component={EpisodesScreen} options={{ gestureEnabled: false }} />
+          <Stack.Screen name="HomeScreen" component={EpisodesScreen} options={{ gestureEnabled: false }} />
           <Stack.Screen
             name="EpisodeDetail"
             component={EpisodeDetailScreen}
