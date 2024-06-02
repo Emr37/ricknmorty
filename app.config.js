@@ -20,10 +20,9 @@ module.exports = () => {
       package: "com.emraksoy.ricknmorty",
       versionCode: 2,
       runtimeVersion: "1.0.0",
-      googleServicesFile: "./google-services.json",
       adaptiveIcon: {
         foregroundImage: "./assets/adaptive-icon.png",
-        backgroundColor: "#ff0000",
+        backgroundColor: "#ffffff",
       },
     },
     web: {
@@ -34,7 +33,7 @@ module.exports = () => {
         projectId: "7b494b04-fc32-472c-8e21-d3a5c3042b79",
       },
     },
-    owner: "motorhaberapp",
+    owner: "emraksoy",
     updates: {
       url: "https://u.expo.dev/7b494b04-fc32-472c-8e21-d3a5c3042b79",
     },
