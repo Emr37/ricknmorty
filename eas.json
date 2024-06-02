@@ -1,0 +1,36 @@
+{
+  "cli": {
+    "version": ">= 5.6.0"
+  },
+  "build": {
+    "development": {
+      "distribution": "internal",
+      "android": {
+        "gradleCommand": ":app:assembleDebug"
+      },
+      "ios": {
+        "buildConfiguration": "Debug"
+      },
+      "channel": "development"
+    },
+    "local": {
+      "android": {
+        "buildType": "apk"
+      },
+      "channel": "local"
+    },
+    "preview": {
+      "distribution": "internal",
+      "channel": "preview"
+    },
+    "production": {
+      "android": {
+        "buildType": "apk"
+      },
+      "channel": "production"
+    }
+  },
+  "submit": {
+    "production": {}
+  }
+}

@@ -5,12 +5,21 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "automatic",
+    "assetBundlePatterns": ["**/*"],
 
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "userInterfaceStyle": "automatic",
+      "bundleIdentifier": "com.emraksoy.ricknmorty",
+      "buildNumber": "",
+      "runtimeVersion": ""
     },
     "android": {
+      "userInterfaceStyle": "automatic",
+      "package": "com.emraksoy.ricknmorty",
+      "versionCode": 0,
+      "runtimeVersion": "",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
@@ -18,6 +27,16 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": ""
+      }
+    },
+    "owner": "emraksoy",
+
+    "updates": {
+      "url": ""
     }
   }
 }
