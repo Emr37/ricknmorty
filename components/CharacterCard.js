@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import { getCharacter } from "../store/characterSlice";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 const { height, width } = Dimensions.get("window");
 
@@ -10,46 +11,61 @@ const CharacterCard = ({ data }) => {
   //let id = data.split("character/")[1];
   const dispatch = useDispatch();
   const { loading, character } = useSelector((state) => state.character);
-  const navigation = useNavigation();
+  const { favChar } = useSelector((state) => state.user);
 
+  const navigation = useNavigation();
   const [item, setItem] = useState(null);
+  const [favo, setFavo] = useState(false);
 
   const getValues = async () => {
-    const res = await dispatch(getCharacter(data));
-    console.log("---", res.payload.character);
-    setItem(res.payload.character);
+    const resChar = await dispatch(getCharacter(data));
+    console.log("---", resChar.payload.character);
+    setItem(resChar.payload.character);
+
+    console.log("----", favChar);
+  };
+
+  const fChar = () => {
+    if (favChar.includes(data)) {
+      setFavo(true);
+    } else setFavo(false);
   };
 
   useEffect(() => {
-    console.log("Karakter ", data);
+    console.log("Karakter ", typeof data);
+    console.log("*** ", favo);
+    fChar();
     getValues();
   }, []);
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity
-        style={styles.card}
-        onPress={() => {
-          navigation.navigate("CharacterDetail", {
-            id: data,
-            data: item,
-            name: item.name,
-          });
-          console.log(data, "Tıklandı");
-        }}
-      >
-        <View style={styles.image}>
+      <View style={styles.card}>
+        <TouchableOpacity
+          style={styles.image}
+          onPress={() => {
+            navigation.navigate("CharacterDetail", {
+              id: data,
+              data: item,
+              name: item.name,
+            });
+            console.log(data, "Tıklandı");
+          }}
+        >
           <Image
             style={{ width: "99%", height: "99%", resizeMode: "contain", opacity: 0.7 }}
             source={{ uri: `https://rickandmortyapi.com/api/character/avatar/${data}.jpeg` }}
           />
-        </View>
+        </TouchableOpacity>
 
         <View style={styles.titleContainer}>
           {!item ? (
             <ActivityIndicator color={"#98cb53"} />
           ) : (
             <>
+              <TouchableOpacity style={styles.star} onPress={() => setFavo((x) => !x)}>
+                <Ionicons name={favo ? "star" : "star-outline"} size={32} color="gold" />
+              </TouchableOpacity>
               <Text style={styles.title}>{item?.name}</Text>
               <Text style={styles.subTitle}>Status : {item?.status}</Text>
               <Text style={styles.subTitle}>Species: {item?.species}</Text>
@@ -57,7 +73,7 @@ const CharacterCard = ({ data }) => {
             </>
           )}
         </View>
-      </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -132,5 +148,11 @@ const styles = StyleSheet.create({
     width: "100%",
 
     paddingHorizontal: 8,
+  },
+  star: {
+    zIndex: 1,
+    position: "absolute",
+    right: 12,
+    bottom: 16,
   },
 });

@@ -13,10 +13,12 @@ const CharacterDetailScreen = ({ route }) => {
   const { id, name, data } = route.params;
   const dispatch = useDispatch();
   const { character } = useSelector((state) => state.character);
+  const { favChar } = useSelector((state) => state.character);
+
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
   const [charItem, setCharItem] = useState(null);
-  const [favChar, setFavCar] = useState(false);
+  const [favo, setFavo] = useState(false);
 
   const getValues = async () => {
     const res = await dispatch(getCharacter(id));
@@ -45,42 +47,44 @@ const CharacterDetailScreen = ({ route }) => {
         </TouchableOpacity>
       </View>
 
-      <ScrollView contentContainerStyle={{ alignItems: "center" }} nestedScrollEnabled>
-        <View style={styles.image}>
-          <Image
-            style={{ width: "100%", height: "100%", resizeMode: "cover" }}
-            source={{ uri: `https://rickandmortyapi.com/api/character/avatar/${id}.jpeg` }}
-          />
-        </View>
-
-        {!charItem ? (
-          <ActivityIndicator color={"#98cb53"} size={"large"} />
-        ) : (
-          <View style={styles.perInfoContainer}>
-            <TouchableOpacity style={styles.star} onPress={() => setFavCar((x) => !x)}>
-              <Ionicons name={favChar ? "star" : "star-outline"} size={32} color="gold" />
-            </TouchableOpacity>
-            <Text style={styles.perInfoTitle}>Status: {charItem.status}</Text>
-            <Text style={styles.perInfoTitle}>Species: {charItem.species}</Text>
-            <Text style={styles.perInfoTitle}>Gender: {charItem.gender}</Text>
-            <Text style={styles.perInfoTitle}>Origin: {charItem.origin.name}</Text>
-            <Text style={styles.perInfoTitle}>Location: {charItem.location.name}</Text>
+      <View>
+        <ScrollView contentContainerStyle={{ alignItems: "center" }} nestedScrollEnabled>
+          <View style={styles.image}>
+            <Image
+              style={{ width: "100%", height: "100%", resizeMode: "cover" }}
+              source={{ uri: `https://rickandmortyapi.com/api/character/avatar/${id}.jpeg` }}
+            />
           </View>
-        )}
 
-        <View style={{ width: "100%", height: "100%", backgroundColor: "#eee" }}>
-          <FlatList
-            nestedScrollEnabled
-            data={newlist[0]}
-            renderItem={({ item }) => <EpisodeCard data={item.split("episode/")[1]} />}
-            keyExtractor={(item) => item.split("episode/")[1]}
-            //refreshControl={<RefreshControl refreshing={refreshing} onRefresh={resfreshTasks} />}
-            showsVerticalScrollIndicator={false}
-            numColumns={2}
-            contentContainerStyle={{ margin: 2 }}
-          />
-        </View>
-      </ScrollView>
+          {!charItem ? (
+            <ActivityIndicator color={"#98cb53"} size={"large"} />
+          ) : (
+            <View style={styles.perInfoContainer}>
+              <TouchableOpacity style={styles.star} onPress={() => setFavo((x) => !x)}>
+                <Ionicons name={favChar?.includes(id) ? "star" : "star-outline"} size={32} color="gold" />
+              </TouchableOpacity>
+              <Text style={styles.perInfoTitle}>Status: {charItem.status}</Text>
+              <Text style={styles.perInfoTitle}>Species: {charItem.species}</Text>
+              <Text style={styles.perInfoTitle}>Gender: {charItem.gender}</Text>
+              <Text style={styles.perInfoTitle}>Origin: {charItem.origin.name}</Text>
+              <Text style={styles.perInfoTitle}>Location: {charItem.location.name}</Text>
+            </View>
+          )}
+
+          <View style={{ width: "100%", height: "100%", backgroundColor: "#eee" }}>
+            <FlatList
+              nestedScrollEnabled
+              data={newlist[0]}
+              renderItem={({ item }) => <EpisodeCard data={item.split("episode/")[1]} />}
+              keyExtractor={(item) => item.split("episode/")[1]}
+              //refreshControl={<RefreshControl refreshing={refreshing} onRefresh={resfreshTasks} />}
+              showsVerticalScrollIndicator={false}
+              numColumns={2}
+              contentContainerStyle={{ margin: 2 }}
+            />
+          </View>
+        </ScrollView>
+      </View>
     </View>
   );
 };
