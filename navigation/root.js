@@ -5,6 +5,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import SplashScreen from "../components/Splash";
 import { CharactersScreen, CharacterDetailScreen, EpisodesScreen, EpisodeDetailScreen, FavCharactersScreen } from "../screens";
 import "react-native-gesture-handler";
+import { TabNav } from "./TabNav";
 
 const Stack = createNativeStackNavigator();
 
@@ -42,7 +43,8 @@ const RootNavigation = () => {
             headerTransparent: true,
           }}
         >
-          <Stack.Screen name="HomeScreen" component={EpisodesScreen} options={{ gestureEnabled: false }} />
+          <Stack.Screen name="HomeScreen" component={TabNav} options={{ gestureEnabled: false }} />
+          <Stack.Screen name="Episodes" component={EpisodesScreen} options={{ gestureEnabled: false, animation: "slide_from_right" }} />
           <Stack.Screen
             name="EpisodeDetail"
             component={EpisodeDetailScreen}
@@ -52,9 +54,9 @@ const RootNavigation = () => {
               headerTransparent: true,
             }}
           />
-          <Stack.Screen name="CharactersScreen" component={CharactersScreen} options={{ gestureEnabled: false, animation: "slide_from_right" }} />
-          <Stack.Screen name="CharacterDetailScreen" component={CharacterDetailScreen} options={{ gestureEnabled: false }} />
-          <Stack.Screen name="FavCharactersScreen" component={FavCharactersScreen} options={{ gestureEnabled: false, animation: "slide_from_right" }} />
+          <Stack.Screen name="Characters" component={CharactersScreen} options={{ gestureEnabled: false, animation: "slide_from_right" }} />
+          <Stack.Screen name="CharacterDetail" component={CharacterDetailScreen} options={{ gestureEnabled: false }} />
+          <Stack.Screen name="FavCharacters" component={FavCharactersScreen} options={{ gestureEnabled: false, animation: "slide_from_right" }} />
         </Stack.Navigator>
       </NavigationContainer>
     </>

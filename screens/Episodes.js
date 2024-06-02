@@ -1,48 +1,32 @@
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, TextInput } from "react-native";
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, TextInput, ActivityIndicator } from "react-native";
 import { useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getEpisodes } from "../store/episodesSlice";
+import { getEpisodes, setNextPage, setSearchQuery, setData, setFullData } from "../store/episodesSlice";
 import EpisodeCard from "../components/EpisodeCard";
-import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
-import { useState } from "react";
-import SearchBox from "../components/SearchBox";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+
 import filter from "lodash.filter";
 
 const EpisodesScreen = () => {
   const insets = useSafeAreaInsets();
 
   const dispatch = useDispatch();
-  const { favChar } = useSelector((state) => state.user);
-  const { loading, episodes, episodesInfo } = useSelector((state) => state.episodes);
-
-  const [searchQuery, setSearchQuery] = useState("");
-  const [data, setData] = useState([]);
-  const [fullData, setFullData] = useState(episodes);
-  const [nextPage, setNextPage] = useState(episodesInfo?.next);
-
-  const handleSearch = (query) => {
-    setSearchQuery(query);
-
-    const formattedQuery = query.toLowerCase();
-    const filteredData = filter(fullData, (episode) => {
-      return contains(episode, formattedQuery);
-    });
-    setData(filteredData);
-    console.log(filteredData);
-  };
-
-  const contains = ({ name }, query) => {
-    if (name.toLowerCase().includes(query)) {
-      return true;
-    } else return false;
-  };
+  const { loading, episodes, episodesInfo, searchQuery, data, fullData, nextPage } = useSelector((state) => state.episodes);
 
   useEffect(() => {
     if (episodes.length === 0) {
-      dispatch(getEpisodes());
+      dispatch(getEpisodes(null));
+      console.log("initial fonk. çalıştı");
     }
     console.log("Home Screen Mounted.");
-    setFullData(episodes);
+
+    if (episodesInfo) {
+      dispatch(
+        setNextPage({
+          nextPage: episodesInfo.next,
+        })
+      );
+    }
 
     return () => {
       console.log("Home Screen Unmounted.");
@@ -50,9 +34,57 @@ const EpisodesScreen = () => {
   }, []);
 
   const loadMore = () => {
-    console.log("Load More");
-    setNextPage(episodesInfo.next);
+    console.log("Load More çalıştı");
+
+    if (episodesInfo) {
+      dispatch(getEpisodes(episodesInfo.next));
+      dispatch(
+        setNextPage({
+          nextPage: episodesInfo.next,
+        })
+      );
+
+      console.log("set full data çalıştı");
+      dispatch(
+        setFullData({
+          fullData: [...fullData, episodes],
+        })
+      );
+
+      console.log("set data çalıştı");
+
+      dispatch(
+        setData({
+          data: [...data, episodes],
+        })
+      );
+    }
   };
+
+  const contains = ({ name }, query) => {
+    if (name?.toLowerCase().includes(query)) {
+      return true;
+    } else return false;
+  };
+
+  const handleSearch = (query) => {
+    dispatch(
+      setSearchQuery({
+        searchQuery: query,
+      })
+    );
+    const formattedQuery = query.toLowerCase();
+    const filteredData = filter(fullData, (episode) => {
+      return contains(episode, formattedQuery);
+    });
+    //setData(filteredData);
+    dispatch(
+      setData({
+        data: filteredData,
+      })
+    );
+  };
+  data.map((e) => console.log(e.id));
 
   return (
     <View style={[styles.container]}>
@@ -69,23 +101,28 @@ const EpisodesScreen = () => {
       </View>
 
       <View style={styles.bodyContainer}>
+        {loading && <ActivityIndicator color={"#98cb53"} size={"large"} />}
         <FlatList
           data={data}
-          renderItem={({ item }) => <EpisodeCard data={item} related={false} />}
+          renderItem={({ item }) => <EpisodeCard data={item?.id} related={false} />}
           keyExtractor={(item) => item?.id}
           //refreshControl={<RefreshControl refreshing={refreshing} onRefresh={resfreshTasks} />}
           showsVerticalScrollIndicator={false}
           numColumns={2}
           contentContainerStyle={{ margin: 2 }}
-          ListFooterComponent={() => {
-            loading && (
+          ListFooterComponent={() =>
+            nextPage && (
               <>
-                <TouchableOpacity onPress={loadMore} style={{ height: "100%", width: "100%" }}>
-                  <Text style={{ color: "#98cb53", fontSize: 20, alignSelf: "center" }}>Load More</Text>
-                </TouchableOpacity>
+                {loading ? (
+                  <ActivityIndicator color={"#98cb53"} />
+                ) : (
+                  <TouchableOpacity onPress={loadMore} style={{ height: "100%", width: "100%" }}>
+                    <Text style={{ color: "#98cb53", fontSize: 20, alignSelf: "center" }}>Load More</Text>
+                  </TouchableOpacity>
+                )}
               </>
-            );
-          }}
+            )
+          }
           ListFooterComponentStyle={{ height: 50, justifyContent: "center", alignItems: "center" }}
         />
       </View>

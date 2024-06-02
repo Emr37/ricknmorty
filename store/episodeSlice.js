@@ -1,8 +1,9 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import axios from "axios"; //Buraya config axios dahil edilebilir.
+import axios from "axios";
 
 export const getEpisode = createAsyncThunk("episode/getEpisode", async (id) => {
   const res = await axios.get(`https://rickandmortyapi.com/api/episode/${id}`);
+  console.log("Get episode çalıştı -", id);
 
   if (res.status !== 200)
     return {

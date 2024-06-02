@@ -1,5 +1,6 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, FlatList } from "react-native";
 import React from "react";
+import CharacterCard from "./CharacterCard";
 
 const EpisodeComponent = ({ data }) => {
   return (
@@ -8,9 +9,7 @@ const EpisodeComponent = ({ data }) => {
         <Text style={styles.title}>Session {data?.episode.split("S")[1].split("E")[0]}</Text>
         <Text style={styles.title}>Episode {data?.episode.split("S")[1].split("E")[1]}</Text>
       </View>
-
-      <Text>Hello EpisodeComponent</Text>
-      <Text>{data?.name}</Text>
+      <Text style={styles.title}>{data?.name}'s Characters</Text>
     </View>
   );
 };
@@ -19,9 +18,8 @@ export default EpisodeComponent;
 
 const styles = StyleSheet.create({
   container: {
-    height: "50%",
+    height: "100%",
     width: "100%",
-    backgroundColor: "cyan",
     alignItems: "center",
     justifyContent: "flex-start",
     padding: 12,
@@ -34,5 +32,10 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 16,
     fontWeight: "700",
+  },
+  bodyContainer: {
+    height: "100%",
+    width: "100%",
+    backgroundColor: "pink",
   },
 });

@@ -1,26 +1,27 @@
-import { View, Text, StyleSheet, Image, ActivityIndicator, TouchableOpacity, Dimensions } from "react-native";
+import { View, Text, StyleSheet, Image, TouchableOpacity, Dimensions, ActivityIndicator } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 import { useEffect, useState } from "react";
-import { getEpisode } from "../store/episodeSlice";
+import { getCharacter } from "../store/characterSlice";
 
 const { height, width } = Dimensions.get("window");
 
-const EpisodeCard = ({ data }) => {
+const CharacterCard = ({ data }) => {
+  //let id = data.split("character/")[1];
   const dispatch = useDispatch();
-  const { loading, episode } = useSelector((state) => state.episode);
+  const { loading, character } = useSelector((state) => state.character);
   const navigation = useNavigation();
 
   const [item, setItem] = useState(null);
 
   const getValues = async () => {
-    const res = await dispatch(getEpisode(data));
-    console.log("---", res.payload.episode);
-    setItem(res.payload.episode);
+    const res = await dispatch(getCharacter(data));
+    console.log("---", res.payload.character);
+    setItem(res.payload.character);
   };
 
   useEffect(() => {
-    console.log("Bölüm ", data);
+    console.log("Karakter ", data);
     getValues();
   }, []);
 
@@ -29,37 +30,39 @@ const EpisodeCard = ({ data }) => {
       <TouchableOpacity
         style={styles.card}
         onPress={() => {
-          navigation.navigate("EpisodeDetail", {
+          navigation.navigate("CharacterDetail", {
             id: data,
             data: item,
-            name: item?.name,
+            name: item.name,
           });
           console.log(data, "Tıklandı");
         }}
       >
         <View style={styles.image}>
-          <Image style={{ width: "99%", height: "99%", resizeMode: "contain", opacity: 0.7 }} source={require("../assets/ricknmorty.png")} />
+          <Image
+            style={{ width: "99%", height: "99%", resizeMode: "contain", opacity: 0.7 }}
+            source={{ uri: `https://rickandmortyapi.com/api/character/avatar/${data}.jpeg` }}
+          />
         </View>
-        {!item ? (
-          <ActivityIndicator color={"#98cb53"} />
-        ) : (
-          <>
-            <View style={styles.dateContainer}>
-              <Text style={styles.date}>{item.air_date}</Text>
-            </View>
-            <View style={styles.titleContainer}>
-              <Text style={styles.title}>Session {item.episode?.split("S")[1].split("E")[0]}</Text>
-              <Text style={styles.title}>Episode {item.episode?.split("S")[1].split("E")[1]}</Text>
-              <Text style={styles.subTitle}>{item.name}</Text>
-            </View>
-          </>
-        )}
+
+        <View style={styles.titleContainer}>
+          {!item ? (
+            <ActivityIndicator color={"#98cb53"} />
+          ) : (
+            <>
+              <Text style={styles.title}>{item?.name}</Text>
+              <Text style={styles.subTitle}>Status : {item?.status}</Text>
+              <Text style={styles.subTitle}>Species: {item?.species}</Text>
+              <Text style={styles.subTitle}>Gender : {item?.gender}</Text>
+            </>
+          )}
+        </View>
       </TouchableOpacity>
     </View>
   );
 };
 
-export default EpisodeCard;
+export default CharacterCard;
 
 const styles = StyleSheet.create({
   container: {
@@ -97,11 +100,13 @@ const styles = StyleSheet.create({
   },
   titleContainer: {
     width: "100%",
+    minHeight: 70,
     padding: 8,
   },
   title: {
     fontSize: 16,
     fontWeight: "700",
+    textAlign: "center",
   },
   subTitle: {
     fontSize: 12,
